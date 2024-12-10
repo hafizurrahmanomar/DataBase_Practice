@@ -1,0 +1,7 @@
+
+
+https://inventory.laravelpoint.com
+email: eng.rabbil@yahoo.com
+pass: abc123
+
+https://dev.mysql.com/downloads/workbench/

@@ -1,0 +1,99 @@
+-- Active: 1733653127245@@127.0.0.1@3306@shop
+
+-- Some of The Most Important SQL Commands
+-- SELECT - extracts data from a database
+-- UPDATE - updates data in a database
+-- DELETE - deletes data from a database
+-- INSERT INTO - inserts new data into a database
+-- CREATE DATABASE - creates a new database
+-- ALTER DATABASE - modifies a database
+-- CREATE TABLE - creates a new table
+-- ALTER TABLE - modifies a table
+-- DROP TABLE - deletes a table
+-- CREATE INDEX - creates an index (search key)
+-- DROP INDEX - deletes an index
+
+CREATE DATABASE shop
+
+ -- DROP DATABASE shop
+
+
+CREATE TABLE users(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(500) NOT NULL,
+    otp VARCHAR(10) NOT NULL DEFAULT '0',
+    -- status ENUM('active', 'inactive') DEFAULT 'active',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
+
+-- DROP TABLE users;
+-- user id status = categories status,
+-- Heroin(Foreign Key) Heroin Name(user_id) to married(EFERENCES) Hero address(users) Hero Name(id),
+-- live to you(ON DELETE RESTRICT), die to you(ON UPDATE CASCADE),
+CREATE TABLE categories(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    Foreign Key (`user_id`) REFERENCES users(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
+
+CREATE TABLE products(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price VARCHAR(50) NOT NULL,
+    unit VARCHAR(50) NOT NULL,
+    quantity INT(10) NOT NULL,
+    description TEXT(500) NOT NULL,
+    image VARCHAR(255),
+    user_id BIGINT UNSIGNED NOT NULL,
+    category_id BIGINT UNSIGNED NOT NULL,
+    Foreign Key (`user_id`) REFERENCES users(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`category_id`) REFERENCES categories(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
+
+CREATE TABLE customers(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    mobile VARCHAR(100) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    Foreign Key (`user_id`) REFERENCES users(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
+
+CREATE TABLE invoices(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    total VARCHAR(50) NOT NULL,
+    discount VARCHAR(50) NOT NULL,
+    vat VARCHAR(50) NOT NULL,
+    payable VARCHAR(50) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    customer_id BIGINT UNSIGNED NOT NULL,
+    Foreign Key (`user_id`) REFERENCES users(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    Foreign Key (`customer_id`) REFERENCES customers(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
+
+CREATE TABLE invoice_products(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    qty VARCHAR(50) NOT NULL,
+    sale_price VARCHAR(50) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    product_id BIGINT UNSIGNED NOT NULL,
+    invoice_id BIGINT UNSIGNED NOT NULL,
+    Foreign Key (`user_id`) REFERENCES users(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    Foreign Key (`product_id`) REFERENCES products(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    Foreign Key (`invoice_id`) REFERENCES invoices(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+)
